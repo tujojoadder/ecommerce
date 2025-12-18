@@ -29,18 +29,18 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::as('frontend.')->group(function () {
-    /*     Route::get('/', [FrontendController::class, 'index'])->name('index');
+ /*        Route::get('/', [FrontendController::class, 'index'])->name('index');
     Route::get('about-us', [FrontendController::class, 'aboutUs'])->name('about.us');
     Route::get('shop', [FrontendController::class, 'shop'])->name('shop');
     Route::get('product/{slug}/{id}', [FrontendController::class, 'productView'])->name('product.view');
-    Route::get('/get/categories', [FrontendController::class, 'getCategories'])->name('get.categories');
+    Route::get('/get/categories', [FrontendController::class, 'getCategories'])->name('get.categories'); */
     // Cart ============
     Route::prefix('add-cart')->as('addCart.')->group(function () {
         Route::post('/store', [CartController::class, 'store'])->name('store');
         Route::post('/update', [CartController::class, 'update'])->name('update');
         Route::get('/get/data', [CartController::class, 'fetchData'])->name('get.data');
         Route::get('/cookie/remove/{product_id}', [CartController::class, 'destroy'])->name('destroy');
-    }); */
+    });
     /* turjo */
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/contact', [ContactController::class, 'index'])->name('contact');

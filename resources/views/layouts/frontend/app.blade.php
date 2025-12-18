@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Groci - Organic Food')</title>
     <!-- Favicon Icon -->
     <link rel="icon" type="image/png" href="{{ asset('frontend/assets/img/favicon.png') }}">
@@ -35,7 +36,8 @@
     @yield('content')
 
     @include('layouts.frontend.footer')
-
+    {{-- sweet 2 --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- Bootstrap core JavaScript -->
     <script src="{{ asset('frontend/assets/vendor/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('frontend/assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
@@ -53,6 +55,7 @@
 
     {{-- JS --}}
     <script src="{{ asset('frontend/assets/js/hc-offcanvas-nav.js') }}"></script>
+    {{-- theme script --}}
     <script>
         (function($) {
             var $main_nav = $('#main-nav');
@@ -132,6 +135,64 @@
                 }
             });
         })(jQuery);
+    </script>
+
+    {{-- js script --}}
+    <script>
+        function addToCart(product_id) {
+
+            var qty = $("#qty1").val() || 1;
+            var url = "{{ route('frontend.addCart.store') }}";
+            $.ajax({
+                type: "POST",
+                dataType: "json",
+                data: {
+                    product_id: product_id,
+                    qty: qty,
+                    _token: $('meta[name="csrf-token"]').attr('content')
+                },
+                url: url,
+                success: function(data) {
+                    if (data[0] == 'success') {
+                        Swal.fire({
+                            title: 'Congratulation',
+                            text: "Add to Cart Successfull.",
+                            icon: 'success',
+                            toast: true,
+                            position: "top-end",
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                        });
+                        addCartData();
+                    } else if (data[0] == 'increase') {
+                        Swal.fire({
+                            title: 'Congratulation',
+                            text: "Product Quantity Increased.",
+                            icon: 'info',
+                            toast: true,
+                            position: "top-end",
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+
+                        });
+                        addCartData();
+                    } else {
+                        Swal.fire({
+                            title: 'Sorry',
+                            text: "Something Wrong.",
+                            icon: 'warning',
+                            toast: true,
+                            position: "top-end",
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                        });
+                    }
+                }
+            });
+        }
     </script>
 
     @stack('scripts')

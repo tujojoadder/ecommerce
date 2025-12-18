@@ -81,19 +81,18 @@
                             Discounted price : <span class="text-success">৳{{ $item->selling_price }}</span>
                         </p>
 
-                        {{-- Checkout --}}
-                        <a href="{{ route('frontend.checkout') }}">
-                            <button type="button" class="btn btn-secondary btn-lg">
-                                <i class="mdi mdi-cart-outline"></i> Add To Cart
-                            </button>
-                        </a>
+                        {{-- Add to cart--}}
+                        <button type="button" class="btn btn-secondary btn-lg" onClick="addToCart({{ $item->id }})">
+                            <i class="mdi mdi-cart-outline"></i> Add To Cart
+                        </button>
+
 
                         <div class="short-description">
                             <h5>
                                 Quick Overview
                                 <p class="float-right">
-                                    Availability:
-                                    <span class="badge badge-success">In Stock</span>
+                                    {{--   Availability:
+                                    <span class="badge badge-success">In Stock</span> --}}
                                 </p>
                             </h5>
                             <p>
@@ -140,25 +139,28 @@
                         <div class="product">
                             <a href="{{ route('frontend.product.item', $product->id) }}">
                                 <div class="product-header">
-                                    <span class="badge badge-success">20% OFF</span>
+                                    <span
+                                        class="badge badge-success">{{ round((($product->main_price - $product->selling_price) / $product->main_price) * 100) }}%OFF</span>
                                     <img class="img-fluid" src="{{ asset('storage/product/' . $product->image) }}"
                                         alt="">
                                     <span class="veg text-success mdi mdi-circle"></span>
                                 </div>
                                 <div class="product-body">
                                     <h5>{{ $product->name }} </h5>
-                                    <h6><strong><span class="mdi mdi-approval"></span> Available in</strong> - 500 gm</h6>
-                                </div>
-                                <div class="product-footer">
-                                    <button type="button" class="btn btn-secondary btn-sm float-right"><i
-                                            class="mdi mdi-cart-outline"></i>
-                                        Add To Cart</button>
-                                    <p class="offer-price mb-0">৳{{ $product->selling_price * 0.8 }}<i
-                                            class="mdi mdi-tag-outline"></i><br><span
-                                            class="regular-price">৳{{ $product->selling_price }}</span>
-                                    </p>
+                                    {{--  <h6><strong><span class="mdi mdi-approval"></span> Available in</strong> - 500 gm</h6> --}}
+
                                 </div>
                             </a>
+                            <div class="product-footer">
+                                <button onClick="addToCart({{ $product->id }})" type="button"
+                                    class="btn btn-secondary btn-sm float-right"><i class="mdi mdi-cart-outline"></i>
+                                    Add To Cart</button>
+                                <p class="offer-price mb-0">৳{{ $product->selling_price }}<i
+                                        class="mdi mdi-tag-outline"></i><br><span
+                                        class="regular-price">৳{{ $product->main_price }}</span>
+                                </p>
+                            </div>
+
                         </div>
                     </div>
                 @endforeach
