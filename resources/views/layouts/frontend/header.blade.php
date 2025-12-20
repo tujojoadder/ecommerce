@@ -159,7 +159,7 @@
                     <li class="list-inline-item cart-btn">
                         <a href="#" data-toggle="offcanvas" class="btn btn-link border-none"><i
                                 class="mdi mdi-cart"></i> My Cart
-                            <small class="cart-value">5</small></a>
+                            <small class="cart-value cartCount"></small></a>
                     </li>
                 </ul>
             </div>

@@ -8,6 +8,8 @@
     <title>@yield('title', 'Groci - Organic Food')</title>
     <!-- Favicon Icon -->
     <link rel="icon" type="image/png" href="{{ asset('frontend/assets/img/favicon.png') }}">
+    {{-- font awesome --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Bootstrap core CSS -->
     <link href="{{ asset('frontend/assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
@@ -26,6 +28,16 @@
     <!-- Owl Carousel -->
     <link rel="stylesheet" href="{{ asset('frontend/assets/vendor/owl-carousel/owl.carousel.css') }}">
     <link rel="stylesheet" href="{{ asset('frontend/assets/vendor/owl-carousel/owl.theme.css') }}">
+
+    <style>
+        .remove-icon {
+        
+            font-size: 18px;
+            /* big size, adjust as needed */
+            cursor: pointer;
+           
+        }
+    </style>
     @stack('styles')
 </head>
 
@@ -139,6 +151,84 @@
 
     {{-- js script --}}
     <script>
+        function addCartData() {
+            var url = "{{ route('frontend.addCart.get.data') }}";
+            var currency = '৳';
+            var base_url = "{{ asset('storage/product/') }}/";
+
+            $.ajax({
+                type: "GET",
+                dataType: "json",
+                url: url,
+                success: function(data) {
+                    $('.cartCount').text(data.length);
+
+                    var html = '';
+                    var total = 0;
+
+                    if (data.length != 0) {
+                        $.each(data, function(index, value) {
+                            // ✅ Add to total
+                            total += (parseFloat(value.price) * parseInt(value.quantity));
+                            html += '<div class="cart-list-product">';
+
+                            html +=
+                                '<a class="float-right remove-cart" href="javascript:void(0)" ' +
+                                'onclick="removeCartData(' + value.product.id + ')">' +
+                                '<i class="fas fa-trash remove-icon"></i></a>';
+
+                            html +=
+                                '<img class="img-fluid" style="height:80px; object-fit:contain" ' +
+                                'src="' + base_url + value.product.image + '" ' +
+                                'alt="' + value.product.name + '">';
+
+                            // 🔖 Optional discount badge
+                            if (value.product.discount) {
+                                html += '<span class="badge badge-success">' + value.product.discount +
+                                    '% OFF</span>';
+                            }
+
+                            html +=
+                                '<h5><a href="#">' + value.product.name + '</a></h5>';
+
+                            html +=
+                                '<h6><strong>Quantity:</strong> ' + value.quantity + '</h6>';
+
+                            html +=
+                                '<p class="offer-price mb-0">' +
+                                (value.price * value.quantity).toFixed(2) + ' ' + currency + '</p>';
+
+                            html += '</div>';
+
+                        });
+
+                        $('.minicart-items').html(html);
+
+                        $('.cartTotalAmount').text(total.toFixed(2) + ' ' + currency);
+                    } else {
+                        $('.minicart-items').html('<li>No items in cart</li>');
+                        $('.cartTotalAmount').text('0.00 ' + currency);
+                    }
+                }
+            });
+        }
+
+
+        function removeCartData(product_id) {
+            url = "{{ route('frontend.addCart.destroy', ':product_id') }}";
+            url = url.replace(':product_id', product_id);
+            $.ajax({
+                type: "GET",
+                url: url,
+                success: function(data) {
+                    addCartData();
+                }
+            });
+        }
+        $(document).ready(function() {
+            addCartData();
+        });
+
         function addToCart(product_id) {
 
             var qty = $("#qty1").val() || 1;
